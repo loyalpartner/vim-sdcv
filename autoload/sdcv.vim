@@ -112,7 +112,7 @@ function! s:sdcv_get_visual_selection()
     return join(lines, "\n")
 endfunction
 
-function! sdcv#search_pointer_visual()
+function! sdcv#search_selection()
 	let word = s:sdcv_get_visual_selection()
 	let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_simple_list)
 	call s:sdcv_show_result(search_result)

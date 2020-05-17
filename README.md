@@ -8,7 +8,7 @@
 绑定快捷键
 ```vimscript
 nnoremap g. :<c-u>call sdcv#search_pointer()<cr>
-vnoremap <silent> g. v:<c-u>call sdcv#search_selecttion()<cr>
+vnoremap <silent> g. v:<c-u>call sdcv#search_selection()<cr>
 ```
 
 字典设置
