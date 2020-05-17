@@ -7,13 +7,13 @@ end
 let s:winid = 0
 
 function! s:sdcv_search_with_dictionary(word, dict_list)
-	if len(a:dict_list) > 0
+	if len(a:dict_list) > 0 && has("unix")
 		let dict_args = "-u " . join(a:dict_list, " -u ")
 	else
 		let dict_args = ""
 	endif
 
-	let sdcv_cmd = 'sdcv ' . dict_args .  ' -n "' . a:word . '"'
+  let sdcv_cmd = 'sdcv --utf8-output --utf8-input' . dict_args .  ' -n "' . a:word . '"'
 	let result = system(sdcv_cmd)
 	return result
 endfunction
