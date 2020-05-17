@@ -13,7 +13,7 @@ function! s:sdcv_search_with_dictionary(word, dict_list)
 		let dict_args = ""
 	endif
 
-  let sdcv_cmd = 'sdcv --utf8-output --utf8-input' . dict_args .  ' -n "' . a:word . '"'
+  let sdcv_cmd = 'sdcv --utf8-output --utf8-input ' . dict_args .  ' -n "' . a:word . '"'
 	let result = system(sdcv_cmd)
 	return result
 endfunction
@@ -23,7 +23,7 @@ function! s:sdcv_nvim_show_result(text)
 	let lines = split(a:text, '\n')
 	let buf = nvim_create_buf(v:false, v:true)
 	call nvim_buf_set_lines(buf, 0, -1, v:true, lines)
-	let opts = {'relative': 'cursor', 'width': 50, 'height': 30, 'col': 0,
+	let opts = {'relative': 'cursor', 'width': 60, 'height': 30, 'col': 0,
 				\ 'row': 1, 'style': 'minimal', 'focusable': 0}
 	let s:winid = nvim_open_win(buf, 0, opts)
 	" optional: change highlight, otherwise Pmenu is used
