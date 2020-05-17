@@ -3,7 +3,16 @@
 在vim里面使用sdcv，支持vim和neovim。
 
 配置方法:
+
+
+绑定快捷键
 ```vimscript
+nnoremap g. :<c-u>call sdcv#search_pointer()<cr>
+vnoremap <silent> g. v:<c-u>call sdcv#search_selecttion()<cr>
+```
+
+字典设置
+```
 " 如果不配置，默认使用所有字典
 " 注意:这个配置不会对windows生效, 因为 windows 里面 sdcv -u 参数不能是中文
 let g:sdcv_dictionary_simple_list = [
@@ -13,9 +22,6 @@ let g:sdcv_dictionary_simple_list = [
 			\"朗道汉英字典5.0",
 			\"新华字典",
 			\]
-" 绑定快捷键
-nnoremap <silent> g. :<c-u>call sdcv#search_pointer()<cr>
-vnoremap <silent> g. v:<c-u>call sdcv#search_pointer("")<cr>
 ```
 
 [windows 安装 sdcv 的方法](./compile-sdcv-in-msys2.md)
