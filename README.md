@@ -3,8 +3,9 @@
 在vim里面使用sdcv，支持vim和neovim。
 
 配置方法:
-```
+```vimscript
 " 如果不配置，默认使用所有字典
+" 注意:这个配置不会对windows生效, 因为 windows 里面 sdcv -u 参数不能是中文
 let g:sdcv_dictionary_simple_list = [
 			\"懒虫简明英汉词典",
 			\"懒虫简明汉英词典",
@@ -20,6 +21,6 @@ vnoremap <silent> g. v:<c-u>call sdcv#search_pointer("")<cr>
 # TODO
 [x] 能够查询短语
 [x] 添加可控制的宽度
-[x] 复杂查询
+[x] 添加滚动支持
 
 
