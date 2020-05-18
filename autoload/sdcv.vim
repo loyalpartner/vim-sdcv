@@ -123,9 +123,3 @@ function! sdcv#search_pointer(...)
 	let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_simple_list)
 	call s:sdcv_show_result(search_result)
 endfunction
-
-function! sdcv#search_simple(word)
-	let word = s:sdcv_replace_nonword_character(a:word)
-	let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_simple_list)
-	call s:sdcv_show_result(search_result)
-endfunction
