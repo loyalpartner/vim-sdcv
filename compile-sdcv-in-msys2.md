@@ -15,6 +15,7 @@ pacman -S cmake gcc make glib2-devel libreadline-devel zlib-devel gettext-devel 
 3. 下载并编译源码
 ```
 git clone https://github.com/et2010/sdcv.git
+git checkout patch
 mkdir sdcv/build
 cd sdcv/build
 cmake

@@ -54,7 +54,7 @@ function! s:centered_floating_window()
 endfunction
 "call sdcv#centered_floating_window(1)
 
-function! s:sdcv_nvim_show_result(text)
+function! s:sdcv_nvim_show_result(word,text)
 
 	let text = "type q to exit, <c-n> next dict, <c-p> prev dict \n\n" . a:text
 
@@ -114,7 +114,7 @@ endfunction
 
 
 
-function SDCV_VIM8_POPUP_CALLBACK(id, result)
+function! SDCV_VIM8_POPUP_CALLBACK(id, result)
 	call setpos(".", s:sdcv_vim8_last_position)
 endfunction
 
