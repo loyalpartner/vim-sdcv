@@ -26,9 +26,12 @@ let g:sdcv_dictionary_simple_list = [
 
 使用:
 查询开始后光标会聚焦在 popup window 上，你可以用下面的快捷键操作
+
+```
  q 退出
  <c-n> 跳到下一个字典
  <c-p> 跳到上一个字典
+```
 
 
 [windows 安装 sdcv 的方法](./compile-sdcv-in-msys2.md)
