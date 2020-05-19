@@ -94,29 +94,28 @@ endfunction
 
 let s:sdcv_vim8_dict_lines = []
 
-function! SDCV_POPUP_FILTER(id, key)
+function! SDCV_VIM8_POPUP_FILTER(id, key)
 	 let pp = popup_getpos(a:id)
-	 if a:key == "q"
+	 if a:key == "q" || a:key == ""
 		 call feedkeys("\<Esc>")
 		 call popup_close(a:id, 1)
 	 elseif a:key == "" || a:key == ""
 
 		 let index = index(s:sdcv_vim8_dict_lines, pp.firstline)
 
-		 echo s:sdcv_vim8_dict_lines
-		 
-		 if a:key == ""
-			 let index = index >= 0 ? index : -1
-			 call feedkeys("k")
-			 call popup_setoptions( a:id,
-						 \ {'firstline' : get(s:sdcv_vim8_dict_lines, index+1)} )
-		 else
-			 call feedkeys("j")
-			 let index = index >= 1 ? index : 1
-			 call popup_setoptions( a:id,
-						 \ {'firstline' : get(s:sdcv_vim8_dict_lines, index-1)} )
-		 end
+		 let index = a:key == "" ? 
+					 \ (index >= 0 ? index + 1 : 0) :
+					 \ (index >= 1 ? index - 1 : 0)
+
+		 call popup_setoptions( a:id,
+					 \ {'firstline' : get(s:sdcv_vim8_dict_lines, index)} )
 	 end
+endfunction
+
+
+
+function SDCV_VIM8_POPUP_CALLBACK(id, result)
+	call setpos(".", s:sdcv_vim8_last_position)
 endfunction
 
 
@@ -150,8 +149,10 @@ function! s:sdcv_vim8_show_result(word,text)
 				\ mapping: 0,
 				\ close : "click",
 				\ filtermode: "n",
-				\ filter: "SDCV_POPUP_FILTER"
+				\ filter: "SDCV_VIM8_POPUP_FILTER",
+				\ callback: "SDCV_VIM8_POPUP_CALLBACK"
 				\})
+
 	call setwinvar(win, 'float', 1)
 	call setwinvar(win, '&wrap', 1)
 	call setwinvar(win, '&linebreak', 1)
@@ -164,6 +165,7 @@ function! s:sdcv_vim8_show_result(word,text)
 
 	call s:sdcv_vim8_get_dict_postion(a:word, lines)
 
+	let s:sdcv_vim8_last_position = getpos(".")
 	for line in lines
 		call appendbufline(bufnr, "$", line)
 		" call popup_settext(win, a:text)
