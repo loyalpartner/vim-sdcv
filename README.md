@@ -35,9 +35,5 @@ let g:sdcv_dictionary_simple_list = [
 
 
 [windows 安装 sdcv 的方法](./compile-sdcv-in-msys2.md)
-# TODO
-[x] 能够查询短语
-[x] 添加可控制的宽度
-[x] 添加滚动支持
 
 
