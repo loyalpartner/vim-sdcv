@@ -1,5 +1,9 @@
 " Searching word with sdcv at Vim.
 
+autocmd filetype sdcv nnoremap q :close!<cr>
+autocmd filetype sdcv nnoremap <c-p> ?-->.*\n--><cr>zt
+autocmd filetype sdcv nnoremap <c-n> /-->.*\n--><cr>zt
+
 if !exists("g:sdcv_dictionary_simple_list")
 	let g:sdcv_dictionary_simple_list = []
 end
@@ -15,20 +19,77 @@ function! s:sdcv_search_with_dictionary(word, dict_list)
 
   let sdcv_cmd = 'sdcv --utf8-output --utf8-input ' . dict_args .  ' -n "' . a:word . '"'
 	let result = system(sdcv_cmd)
+
+	" format result
+	let result = substitute(text, "[\\.] \\*", "\n*", "g")
+	let result = substitute(text, " \\(\\d [([]\\)", "\n\\1", "g")
+	let result = substitute(text, "\\(\\d [([]\\)", "\n\\1", "g")
+	let result = substitute(text, " \\((\\w)\\)", "\n\\1", "g")
+
 	return result
 endfunction
 
+" TODO: add border and padding.
+function! s:centered_floating_window()
+	let width = min([&columns - 4, max([80, &columns - 20])])
+	let height = min([&lines - 4, max([20, &lines - 10])])
+	let top = ((&lines - height) / 2) - 1
+	let left = (&columns - width) / 2
+	let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
+
+	let top = "╭" . repeat("─", width - 2) . "╮"
+	let mid = "│" . repeat(" ", width - 2) . "│"
+	let bot = "╰" . repeat("─", width - 2) . "╯"
+	let lines = [top] + repeat([mid], height - 2) + [bot]
+	let s:buf = nvim_create_buf(v:false, v:true)
+	call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+	call nvim_open_win(s:buf, v:true, opts)
+	set winhl=Normal:Floating
+	let opts.row += 1
+	let opts.height -= 2
+	let opts.col += 2
+	let opts.width -= 4
+	call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+	au BufWipeout <buffer> exe 'bw '.s:buf
+endfunction
+"call sdcv#centered_floating_window(1)
+
 function! s:sdcv_nvim_show_result(text)
 
-	let lines = split(a:text, '\n')
+	let text = "type q to exit, <c-n> next dict, <c-p> prev dict \n\n" . a:text
+
+	let height = &lines - 3
+  let width = float2nr(&columns - (&columns * 2 / 10))
+	let col = float2nr((&columns - width) / 2)
+
+	let opts = {
+				\'relative': 'editor',
+				\'row': height * 0.3,
+				\'col': col + 30,
+				\'width': width * 3 / 4,
+				\'height': height / 2,
+				\'focusable': 1
+				\}
+
 	let buf = nvim_create_buf(v:false, v:true)
-	call nvim_buf_set_lines(buf, 0, -1, v:true, lines)
-	let opts = {'relative': 'cursor', 'width': 60, 'height': 30, 'col': 0,
-				\ 'row': 1, 'style': 'minimal', 'focusable': 0}
-	let s:winid = nvim_open_win(buf, 0, opts)
+	let win = nvim_open_win(buf, v:true, opts)
+
 	" optional: change highlight, otherwise Pmenu is used
-	call nvim_win_set_option(s:winid, 'winhl', 'Normal:MyHighlight')
-	autocmd CursorMoved <buffer> ++once call nvim_win_close(s:winid, v:false)
+	call nvim_win_set_option(win, 'winhl', 'Normal:Pmenu')
+
+	setlocal
+				\ buftype=nofile
+				\ filetype=sdcv
+				\ nobuflisted
+				\ bufhidden=hide
+				\ number
+				\ nohlsearch
+				\ nowrap
+				\ norelativenumber
+				\ signcolumn=no
+
+ 	call nvim_buf_set_lines(buf, 0, -1, v:true, split(text, '\n'))
+ 	" autocmd CursorMoved <buffer> ++once call nvim_win_close(s:win, v:false)
 endfunction
 
 
