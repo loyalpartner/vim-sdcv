@@ -21,10 +21,10 @@ function! s:sdcv_search_with_dictionary(word, dict_list)
 	let result = system(sdcv_cmd)
 
 	" format result
-	let result = substitute(text, "[\\.] \\*", "\n*", "g")
-	let result = substitute(text, " \\(\\d [([]\\)", "\n\\1", "g")
-	let result = substitute(text, "\\(\\d [([]\\)", "\n\\1", "g")
-	let result = substitute(text, " \\((\\w)\\)", "\n\\1", "g")
+	let result = substitute(result, "[\\.] \\*", "\n*", "g")
+	let result = substitute(result, " \\(\\d [([]\\)", "\n\\1", "g")
+	let result = substitute(result, "\\(\\d [([]\\)", "\n\\1", "g")
+	let result = substitute(result, " \\((\\w)\\)", "\n\\1", "g")
 
 	return result
 endfunction
