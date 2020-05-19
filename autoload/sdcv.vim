@@ -92,34 +92,90 @@ function! s:sdcv_nvim_show_result(text)
  	" autocmd CursorMoved <buffer> ++once call nvim_win_close(s:win, v:false)
 endfunction
 
+let s:sdcv_vim8_dict_lines = []
 
 function! SDCV_POPUP_FILTER(id, key)
-	call popup_close(a:id, 1)
+	 let pp = popup_getpos(a:id)
+	 if a:key == "q"
+		 call feedkeys("\<Esc>")
+		 call popup_close(a:id, 1)
+	 elseif a:key == "" || a:key == ""
+
+		 let index = index(s:sdcv_vim8_dict_lines, pp.firstline)
+
+		 echo s:sdcv_vim8_dict_lines
+		 
+		 if a:key == ""
+			 let index = index >= 0 ? index : -1
+			 call feedkeys("k")
+			 call popup_setoptions( a:id,
+						 \ {'firstline' : get(s:sdcv_vim8_dict_lines, index+1)} )
+		 else
+			 call feedkeys("j")
+			 let index = index >= 1 ? index : 1
+			 call popup_setoptions( a:id,
+						 \ {'firstline' : get(s:sdcv_vim8_dict_lines, index-1)} )
+		 end
+	 end
 endfunction
 
-function! s:sdcv_vim8_show_result(text)
 
-	let s:winid = popup_create("sdcv", #{
-				\ scrollbar: 1,
-				\ border: [1,1,1,1],
-				\ padding: [0,1,0,1],
-				\ maxheight: 50,
-				\ filter: "SDCV_POPUP_FILTER"
-				\})
-
-	let bufnr = winbufnr(s:winid)
-	let lines = split(a:text, '\n')
-
-	for line in lines
-		call appendbufline(bufnr, "$", line)
+function! s:sdcv_vim8_get_dict_postion(word, lines)
+	for i in range(len(a:lines))
+		let line = get(a:lines, i)
+		if matchstr(line, "-->".a:word) != ""
+			let index = i - 1
+			call add(s:sdcv_vim8_dict_lines, index) 
+		endif
 	endfor
 endfunction
 
-function! s:sdcv_show_result(text)
+function! s:sdcv_vim8_show_result(word,text)
+
+	let height = &lines - 3
+  let width = float2nr(&columns - (&columns * 2 / 10))
+	let col = float2nr((&columns - width) / 2)
+
+	let win = popup_create("", #{
+				\ scrollbar: 1,
+				\ border: [1,1,1,1],
+				\ padding: [0,1,0,1],
+				\ maxwidth: width * 3 / 4,
+				\ maxheight: height / 2,
+				\ fixed: 1,
+				\ mousemoved: 'word',
+				\ minwidth: width * 3 / 4,
+				\ minmaxheight: height / 2,
+				\ time: 1000000,
+				\ mapping: 0,
+				\ close : "click",
+				\ filtermode: "n",
+				\ filter: "SDCV_POPUP_FILTER"
+				\})
+	call setwinvar(win, 'float', 1)
+	call setwinvar(win, '&wrap', 1)
+	call setwinvar(win, '&linebreak', 1)
+	call setwinvar(win, '&conceallevel', 2)
+
+	let bufnr = winbufnr(win)
+	let lines = split(a:text, '\n')
+
+	let s:sdcv_vim8_dict_lines = []
+
+	call s:sdcv_vim8_get_dict_postion(a:word, lines)
+
+	for line in lines
+		call appendbufline(bufnr, "$", line)
+		" call popup_settext(win, a:text)
+	endfor
+endfunction
+
+
+function! s:sdcv_show_result(word,text)
 	if exists('*nvim_open_win')
-		call s:sdcv_nvim_show_result(a:text)
+		call s:sdcv_nvim_show_result(a:word,a:text)
 	elseif exists('*popup_create')
-		call s:sdcv_vim8_show_result(a:text)
+		call s:sdcv_vim8_show_result(a:word,a:text)
 	else
 		echo a:text
 	end
@@ -176,11 +232,11 @@ endfunction
 function! sdcv#search_selection()
 	let word = s:sdcv_get_visual_selection()
 	let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_simple_list)
-	call s:sdcv_show_result(search_result)
+	call s:sdcv_show_result(word,search_result)
 endfunction
 
 function! sdcv#search_pointer(...)
 	let word = s:sdcv_pick_word()
 	let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_simple_list)
-	call s:sdcv_show_result(search_result)
+	call s:sdcv_show_result(word,search_result)
 endfunction
