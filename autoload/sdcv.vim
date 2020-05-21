@@ -226,7 +226,7 @@ function! s:sdcv_pick_word()
 
 	let search_index = 0
 	for word in words
-		if offset >=  search_index &&  offset <= search_index + strlen(word)
+		if offset >=  search_index &&  offset < search_index + strlen(word)
 			return word
 		end
 
