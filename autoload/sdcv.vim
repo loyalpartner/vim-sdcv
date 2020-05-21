@@ -92,6 +92,7 @@ function! s:sdcv_nvim_show_result(word,text,type)
 endfunction
 " }}}
 
+" vim8
 let s:sdcv_vim8_dict_lines = []
 
 function! SDCV_VIM8_POPUP_FILTER(id, key)
@@ -128,7 +129,23 @@ function! s:sdcv_vim8_get_dict_postion(word, lines)
 	endfor
 endfunction
 
-function! s:sdcv_vim8_show_result(word,text)
+function! s:sdcv_vim8_show_simple_result(word,text)
+	let s:winid = popup_create("sdcv", #{
+				\ border: [1,1,1,1],
+				\ padding: [0,1,0,1],
+				\ maxheight: 50,
+				\ filter: "SDCV_VIM8_POPUP_FILTER"
+				\})
+
+	let bufnr = winbufnr(s:winid)
+	let lines = split(a:text, '\n')
+
+	for line in a:text
+		call appendbufline(bufnr, "$", line)
+	endfor
+endfunction
+
+function! s:sdcv_vim8_show_detail_result(word,text)
 
 	let height = &lines - 3
   let width = float2nr(&columns - (&columns * 2 / 10))
@@ -171,6 +188,16 @@ function! s:sdcv_vim8_show_result(word,text)
 	endfor
 endfunction
 
+function! s:sdcv_vim8_show_result(word,text,type)
+	if a:type == "simple"
+		call s:sdcv_vim8_show_simple_result(a:word, a:text)
+	else
+		call s:sdcv_vim8_show_detail_result(a:word, a:text)
+	end
+
+endfunction
+" }}}
+"
 function! s:sdcv_show_result(word,text,type)
 	if exists('*nvim_open_win')
 		call s:sdcv_nvim_show_result(a:word,a:text,a:type)
