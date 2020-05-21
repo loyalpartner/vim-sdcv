@@ -2,6 +2,8 @@
 ![sdcv](./sdcv_vim.gif)
 在vim里面使用sdcv，支持vim和neovim。
 
+支持骆驼命名分词, 例如: `AppName` 会分成 App 和 Name，当光标位于 App 上时，会查询 App，当光标位于 Name，则会查询 Name。
+
 ## 配置:
 
 

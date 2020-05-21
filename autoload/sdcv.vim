@@ -220,9 +220,14 @@ function! s:sdcv_pick_word()
 	let words = split(text, " ")
 
 	let offset = pos1[2] - pos2[2]
-	if pos2[1] < pos1[1] || offset > strlen(text)
+	if pos2[1] < pos1[1] 
 		let offset = 0
 	endif
+
+	let total = eval(join(map(copy(words), {_,v->strlen(v)}),"+"))
+	if offset >= total
+		return words[0]
+	end
 
 	let search_index = 0
 	for word in words
@@ -232,11 +237,13 @@ function! s:sdcv_pick_word()
 
 		let search_index = search_index + strlen(word)
 	endfor
+	return words[-1]
 endfunction
 
 function! s:sdcv_replace_nonword_character(word)
 	let result = substitute(a:word,'\([a-z0-9]\)\([A-Z]\)','\1_\2', "g")
 	let result = substitute(result,'\([A-Z]+\)\([A-Z][a-z]\)','\1_\2', "g")
+	let result = substitute(result,'\.','_', "g")
 	let result = substitute(result,'-','_', "g")
 	let result = substitute(result,'#','_', "g")
 	let result = substitute(result,'_+','_', "g")
