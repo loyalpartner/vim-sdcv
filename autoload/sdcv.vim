@@ -8,8 +8,13 @@ if !exists("g:sdcv_dictionary_simple_list")
 	let g:sdcv_dictionary_simple_list = []
 end
 
+if !exists("g:sdcv_dictionary_complete_list")
+	let g:sdcv_dictionary_complete_list = []
+end
+
 let s:winid = 0
 
+" nvim {{{
 function! s:sdcv_search_with_dictionary(word, dict_list)
 	if len(a:dict_list) > 0 && has("unix")
 		let dict_args = "-u " . join(a:dict_list, " -u ")
@@ -20,42 +25,29 @@ function! s:sdcv_search_with_dictionary(word, dict_list)
   let sdcv_cmd = 'sdcv --utf8-output --utf8-input ' . dict_args .  ' -n "' . a:word . '"'
 	let result = system(sdcv_cmd)
 
-	" format result
-	let result = substitute(result, "[\\.] \\*", "\n*", "g")
-	let result = substitute(result, " \\(\\d [([]\\)", "\n\\1", "g")
-	let result = substitute(result, "\\(\\d [([]\\)", "\n\\1", "g")
-	let result = substitute(result, " \\((\\w)\\)", "\n\\1", "g")
-
 	return result
 endfunction
 
-" TODO: add border and padding.
-function! s:centered_floating_window()
-	let width = min([&columns - 4, max([80, &columns - 20])])
-	let height = min([&lines - 4, max([20, &lines - 10])])
-	let top = ((&lines - height) / 2) - 1
-	let left = (&columns - width) / 2
-	let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
-
-	let top = "╭" . repeat("─", width - 2) . "╮"
-	let mid = "│" . repeat(" ", width - 2) . "│"
-	let bot = "╰" . repeat("─", width - 2) . "╯"
-	let lines = [top] + repeat([mid], height - 2) + [bot]
-	let s:buf = nvim_create_buf(v:false, v:true)
-	call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
-	call nvim_open_win(s:buf, v:true, opts)
-	set winhl=Normal:Floating
-	let opts.row += 1
-	let opts.height -= 2
-	let opts.col += 2
-	let opts.width -= 4
-	call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
-	au BufWipeout <buffer> exe 'bw '.s:buf
+function! s:sdcv_formart_result(result) abort
+	let result = substitute(a:result, "[\\.] \\*", "\n*", "g")
+	let result = substitute(a:result, " \\(\\d [([]\\)", "\n\\1", "g")
+	let result = substitute(a:result, "\\(\\d [([]\\)", "\n\\1", "g")
+	let result = substitute(a:result, " \\((\\w)\\)", "\n\\1", "g")
+	return result
 endfunction
-"call sdcv#centered_floating_window(1)
 
-function! s:sdcv_nvim_show_result(word,text)
+function! s:sdcv_nvim_show_simple_result(word, text)
+	let buf = nvim_create_buf(v:false, v:true)
+	let opts = {'relative': 'cursor', 'width': 50, 'height': 30, 'col': 0,
+				\ 'row': 1, 'style': 'minimal', 'focusable': 0}
+	let s:winid = nvim_open_win(buf, 0, opts)
+	" optional: change highlight, otherwise Pmenu is used
+	call nvim_win_set_option(s:winid, 'winhl', 'Normal:MyHighlight')
+ 	call nvim_buf_set_lines(buf, 0, -1, v:true, split(a:text, '\n'))
+	autocmd CursorMoved <buffer> ++once call nvim_win_close(s:winid, v:false)
+endfunction
 
+function! s:sdcv_nvim_show_detail_result(word, text)
 	let text = "type q to exit, <c-n> next dict, <c-p> prev dict \n\n" . a:text
 
 	let height = &lines - 3
@@ -88,9 +80,17 @@ function! s:sdcv_nvim_show_result(word,text)
 				\ norelativenumber
 				\ signcolumn=no
 
- 	call nvim_buf_set_lines(buf, 0, -1, v:true, split(text, '\n'))
- 	" autocmd CursorMoved <buffer> ++once call nvim_win_close(s:win, v:false)
+ 	call nvim_buf_set_lines(buf, 0, -1, v:true, split(a:text, '\n'))
 endfunction
+
+function! s:sdcv_nvim_show_result(word,text,type)
+	if a:type == "simple"
+		call s:sdcv_nvim_show_simple_result(a:word, a:text)
+	else
+		call s:sdcv_nvim_show_detail_result(a:word, a:text)
+	end
+endfunction
+" }}}
 
 let s:sdcv_vim8_dict_lines = []
 
@@ -111,7 +111,6 @@ function! SDCV_VIM8_POPUP_FILTER(id, key)
 					 \ {'firstline' : get(s:sdcv_vim8_dict_lines, index)} )
 	 end
 endfunction
-
 
 
 function! SDCV_VIM8_POPUP_CALLBACK(id, result)
@@ -172,12 +171,11 @@ function! s:sdcv_vim8_show_result(word,text)
 	endfor
 endfunction
 
-
-function! s:sdcv_show_result(word,text)
+function! s:sdcv_show_result(word,text,type)
 	if exists('*nvim_open_win')
-		call s:sdcv_nvim_show_result(a:word,a:text)
+		call s:sdcv_nvim_show_result(a:word,a:text,a:type)
 	elseif exists('*popup_create')
-		call s:sdcv_vim8_show_result(a:word,a:text)
+		call s:sdcv_vim8_show_result(a:word,a:text,a:type)
 	else
 		echo a:text
 	end
@@ -231,14 +229,27 @@ function! s:sdcv_get_visual_selection()
     return join(lines, "\n")
 endfunction
 
+
 function! sdcv#search_selection()
 	let word = s:sdcv_get_visual_selection()
 	let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_simple_list)
-	call s:sdcv_show_result(word,search_result)
+	call s:sdcv_show_result(word, search_result, "simple")
+endfunction
+
+function! sdcv#search_detail_selection()
+	let word = s:sdcv_get_visual_selection()
+	let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_complete_list)
+	call s:sdcv_show_result(word, s:sdcv_formart_result(search_result), "detail")
 endfunction
 
 function! sdcv#search_pointer(...)
 	let word = s:sdcv_pick_word()
 	let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_simple_list)
-	call s:sdcv_show_result(word,search_result)
+	call s:sdcv_show_result(word, search_result, "simple")
+endfunction
+
+function! sdcv#search_detail_pointer(...)
+	let word = s:sdcv_pick_word()
+	let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_complete_list)
+	call s:sdcv_show_result(word, s:sdcv_formart_result(search_result), "detail")
 endfunction
