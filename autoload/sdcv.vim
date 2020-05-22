@@ -241,8 +241,10 @@ function! s:sdcv_pick_word()
 endfunction
 
 function! s:sdcv_replace_nonword_character(word)
-  let result = substitute(a:word,'\([a-z0-9]\)\([A-Z]\)','\1_\2', "g")
-  let result = substitute(result,'\([A-Z]+\)\([A-Z][a-z]\)','\1_\2', "g")
+  " set ignorecase will change search action.
+  " so we need add \c to the pattern.
+  let result = substitute(a:word,'\C\([a-z0-9]\)\([A-Z]\)','\1_\2', "g")
+  let result = substitute(result,'\C\([A-Z]+\)\([A-Z][a-z]\)','\1_\2', "g")
   let result = substitute(result,'\.','_', "g")
   let result = substitute(result,'-','_', "g")
   let result = substitute(result,'#','_', "g")
