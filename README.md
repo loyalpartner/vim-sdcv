@@ -1,6 +1,6 @@
 # vim-sdcv
 
-[ English ](./README.md)|[ 中 文 ](./README.zh-cn.md)
+English|[ 中 文 ](./README.zh-cn.md)
 
 ![sdcv](./sdcv_vim.gif)
 

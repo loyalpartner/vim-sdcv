@@ -1,3 +1,5 @@
+[English](./README.md)|中 文
+
 # vim-sdcv
 ![sdcv](./sdcv_vim.gif)
 在vim里面使用sdcv，支持vim和neovim。
