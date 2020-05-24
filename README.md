@@ -22,9 +22,9 @@ vnoremap g> v:<c-u>call sdcv#search_detail_pointer("v")<cr>
 
 The VIM-SDCV has two dictionary sets. 
 
-`sdcv_dictionary_simple_list` This dictionary set sets up dictionaries that are less informative.
+`s:sdcv_dictionary_simple_list` This dictionary set sets up dictionaries that are less informative.
 
-`sdcv_dictionary_complete_list` This dictionary set sets up dictionaries with complex information
+`s:sdcv_dictionary_complete_list` This dictionary set sets up dictionaries with complex information
 
 Note: Windows uses all dictionaries by default, sdcv is currently unable to use the -u option with Chinese
 

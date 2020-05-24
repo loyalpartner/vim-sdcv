@@ -20,9 +20,9 @@ vnoremap g> v:<c-u>call sdcv#search_detail_pointer("v")<cr>
 ### 字典设置
 vim-sdcv 有两个字典集， 
 
-`sdcv_dictionary_simple_list` 这个字典集设置一些信息量少的字典
+`g:sdcv_dictionary_simple_list` 这个字典集设置一些信息量少的字典
 
-`sdcv_dictionary_complete_list` 这个字典集设置信息量复杂的字典
+`g:sdcv_dictionary_complete_list` 这个字典集设置信息量复杂的字典
 
 注意：windows 会默认使用所有字典，sdcv 目前无法使用包含中文的 -u 选项
 ```
