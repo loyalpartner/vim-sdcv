@@ -225,7 +225,7 @@ function! s:sdcv_pick_word()
   endif
 
   let total = eval(join(map(copy(words), {_,v->strlen(v)}),"+"))
-  if offset >= total
+  if offset > total
     return words[0]
   end
 
