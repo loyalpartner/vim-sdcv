@@ -30,28 +30,29 @@ Note: Windows uses all dictionaries by default, sdcv is currently unable to use 
 
 ````
 let g:sdcv_dictionary_simple_list = [
-                        \"Lazybones Concise English-Chinese Dictionary",
-                        \"Lazybones Concise Chinese and English Dictionary",
-                        \"Landau English-Chinese Dictionary 5.0",
-                        \"Landau Chinese and English Dictionary 5.0",
-                        \"Xinhua Dictionary",
-                        \]
+			\"懒虫简明英汉词典",
+			\"懒虫简明汉英词典",
+			\"朗道英汉字典5.0",
+			\"朗道汉英字典5.0",
+			\"新华字典",
+			\]
 
 let g:sdcv_dictionary_complete_list = [
-                        \"Oxford English and Chinese Doubled Up Edition",
-                        \"Lazybones Concise English-Chinese Dictionary",
-                        \"Lazybones Concise Chinese and English Dictionary",
-                        \"Landau English-Chinese Dictionary 5.0",
-                        \"Landau Chinese and English Dictionary 5.0",
-                        \"Xinhua Dictionary",
-                        \]
+			\"牛津英汉双解美化版",
+			\"懒虫简明英汉词典",
+			\"懒虫简明汉英词典",
+			\"朗道英汉字典5.0",
+			\"朗道汉英字典5.0",
+			\"新华字典",
+			\]
 
 ````
 
 ### Use:
 
-sdcv#search_detail_pointer() The cursor will focus on the popup window when the query starts, which you can do using the following shortcut
+sdcv#search_detail_pointer() 
 
+The cursor will focus on the popup window when the query starts, which you can do using the following shortcut
 
 ````
  q Exit
@@ -59,8 +60,5 @@ sdcv#search_detail_pointer() The cursor will focus on the popup window when the 
  <c-p> Skip to previous dictionary
 ````
 
-
-
-Translated with www.DeepL.com/Translator (free version)
 
 [windows 安装 sdcv 的方法](./compile-sdcv-in-msys2.md)
