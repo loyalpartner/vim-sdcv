@@ -282,13 +282,21 @@ function! sdcv#search_detail_selection()
   call s:sdcv_show_result(word, s:sdcv_formart_result(search_result), "detail")
 endfunction
 
-function! sdcv#search_pointer(...)
+function! sdcv#search_pointer(mode)
+  if a:mode == "v"
+    call sdcv#search_selection()
+    return
+  endif
   let word = s:sdcv_pick_word()
   let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_simple_list)
   call s:sdcv_show_result(word, search_result, "simple")
 endfunction
 
-function! sdcv#search_detail_pointer(...)
+function! sdcv#search_detail_pointer(mode)
+  if a:mode == "v"
+    call sdcv#search_detail_selection()
+    return
+  endif
   let word = s:sdcv_pick_word()
   let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_complete_list)
   call s:sdcv_show_result(word, s:sdcv_formart_result(search_result), "detail")
