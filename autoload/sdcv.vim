@@ -265,13 +265,14 @@ function! s:sdcv_get_visual_selection()
   return join(lines, "\n")
 endfunction
 
-function sdcv#search_input(word) abort
+function! sdcv#search_input(word) abort
   let search_result = s:sdcv_search_with_dictionary(a:word , g:sdcv_dictionary_complete_list)
   call s:sdcv_show_result(a:word, s:sdcv_formart_result(search_result), "detail")
 endfunction
 
 function! sdcv#search_selection()
   let word = s:sdcv_get_visual_selection()
+  let word = s:sdcv_replace_nonword_character(word)
   let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_simple_list)
   call s:sdcv_show_result(word, search_result, "simple")
 endfunction
