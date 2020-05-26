@@ -279,6 +279,7 @@ endfunction
 
 function! sdcv#search_detail_selection()
   let word = s:sdcv_get_visual_selection()
+  let word = s:sdcv_replace_nonword_character(word)
   let search_result = s:sdcv_search_with_dictionary(word , g:sdcv_dictionary_complete_list)
   call s:sdcv_show_result(word, s:sdcv_formart_result(search_result), "detail")
 endfunction
