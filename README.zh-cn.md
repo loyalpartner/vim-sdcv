@@ -11,6 +11,7 @@
 
 ### 绑定快捷键
 ```vimscript
+nnoremap gs <Plug>Sdcv
 nnoremap g.  :<c-u>call sdcv#search_pointer("n")<cr>
 vnoremap g. v:<c-u>call sdcv#search_pointer("v")<cr>
 nnoremap g>  :<c-u>call sdcv#search_detail_pointer("n")<cr>
