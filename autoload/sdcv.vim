@@ -119,7 +119,7 @@ function! SDCV_VIM8_POPUP_CALLBACK(id, result)
 endfunction
 
 
-function! s:sdcv_vim8_get_dict_postion(word, lines)
+function! s:sdcv_vim8_get_dict_position(word, lines)
   for i in range(len(a:lines))
     let line = get(a:lines, i)
     if matchstr(line, "-->".a:word) != ""
@@ -179,7 +179,7 @@ function! s:sdcv_vim8_show_detail_result(word,text)
 
   let s:sdcv_vim8_dict_lines = []
 
-  call s:sdcv_vim8_get_dict_postion(a:word, lines)
+  call s:sdcv_vim8_get_dict_position(a:word, lines)
 
   let s:sdcv_vim8_last_position = getpos(".")
   for line in lines

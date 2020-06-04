@@ -30,5 +30,3 @@ nnoremap <Plug>SdcvPointer :call sdcv#search_pointer("n")<cr>
 nnoremap <Plug>SdcvPointer+ :call sdcv#search_detail_pointer("n")<cr>
 vnoremap <Plug>SdcvPointerV :call sdcv#search_pointer("v")<cr>
 vnoremap <Plug>SdcvPointerV+ :call sdcv#search_detail_pointer("v")<cr>
-
-nmap gs <Plug>Sdcv
